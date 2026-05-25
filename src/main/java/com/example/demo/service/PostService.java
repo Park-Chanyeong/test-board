@@ -1,5 +1,8 @@
-package com.example.demo;
+package com.example.demo.service;
 
+import com.example.demo.dto.PostDto;
+import com.example.demo.entity.Post;
+import com.example.demo.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
