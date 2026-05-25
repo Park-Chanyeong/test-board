@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.PostDto;
 import com.example.demo.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,8 +34,9 @@ public class PostViewController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute PostDto dto) {
-        postService.create(dto);
+    public String create(@ModelAttribute PostDto dto, Authentication authentication) {
+        String username = authentication != null ? authentication.getName() : null;
+        postService.create(dto, username);
         return "redirect:/web/posts";
     }
 
