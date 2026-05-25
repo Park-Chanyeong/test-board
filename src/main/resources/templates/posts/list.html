@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 목록</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f4f4f4; }
+        a { color: #0066cc; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .btn { display: inline-block; padding: 8px 16px; background: #0066cc; color: white; border-radius: 4px; }
+        .empty { color: #999; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>게시글 목록</h1>
+    <a class="btn" th:href="@{/web/posts/new}">글 작성</a>
+
+    <table th:if="${!posts.isEmpty()}">
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="post : ${posts}">
+                <td th:text="${post.id}"></td>
+                <td><a th:href="@{/web/posts/{id}(id=${post.id})}" th:text="${post.title}"></a></td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="empty" th:if="${posts.isEmpty()}">게시글이 없습니다.</p>
+</body>
+</html>
