@@ -5,10 +5,11 @@ import com.example.demo.dto.CommentDto;
 import com.example.demo.entity.Comment;
 import com.example.demo.entity.Post;
 import com.example.demo.entity.User;
-import com.example.demo.exception.EntityNotFoundException;
+import com.example.demo.exception.AppException;
 import com.example.demo.repository.CommentRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,14 +34,14 @@ public class CommentService {
     @Transactional(readOnly = true)
     public Comment findById(Long id) {
         return commentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("댓글을 찾을 수 없습니다: " + id));
+                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다: " + id));
     }
 
     @Transactional
     public CommentDetailDto create(Long postId, CommentDto dto, String username) {
         Post post = postService.findByIdInternal(postId);
         User author = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + username));
+                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다: " + username));
         Comment comment = new Comment();
         comment.setPost(post);
         comment.setAuthor(author);

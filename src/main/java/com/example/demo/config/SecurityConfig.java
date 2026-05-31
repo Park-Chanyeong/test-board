@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -11,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,10 +28,15 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CorsConfigurationSource corsConfigurationSource;
 
+    @Bean
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
+        return username -> userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    }
+
     /**
      * REST API / Swagger UI / H2 콘솔 요청을 처리하는 Security 필터 체인.
      * JWT Stateless 방식이므로 세션 미사용, CSRF 비활성화.
-     * Order(1): webFilterChain보다 먼저 평가.
      */
     @Bean
     @Order(1)
@@ -54,7 +62,6 @@ public class SecurityConfig {
     /**
      * Thymeleaf 웹 UI 요청을 처리하는 Security 필터 체인.
      * 세션/쿠키 기반, CSRF 활성화 유지.
-     * Order(2): apiFilterChain 이후 평가.
      */
     @Bean
     @Order(2)

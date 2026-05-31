@@ -25,13 +25,13 @@ public class CommentController extends BaseController {
 
     private final CommentService commentService;
 
-    @Operation(summary = "댓글 목록 조회", description = "게시글의 댓글 목록을 반환합니다. 인증 불필요.")
+    @Operation(summary = "댓글 목록 조회")
     @GetMapping
     public ResponseEntity<CommonResponse<List<CommentDetailDto>>> getComments(@PathVariable Long postId) {
         return execute(HttpStatus.OK, () -> commentService.findByPostId(postId));
     }
 
-    @Operation(summary = "댓글 작성", description = "댓글을 작성합니다. JWT 인증 필요.")
+    @Operation(summary = "댓글 작성")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
     public ResponseEntity<CommonResponse<CommentDetailDto>> createComment(
@@ -41,7 +41,7 @@ public class CommentController extends BaseController {
         return execute(HttpStatus.CREATED, () -> commentService.create(postId, dto, userDetails.getUsername()));
     }
 
-    @Operation(summary = "댓글 삭제", description = "댓글을 삭제합니다. JWT 인증 필요, 작성자 본인만 가능.")
+    @Operation(summary = "댓글 삭제")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(

@@ -4,10 +4,11 @@ import com.example.demo.dto.LikeDto;
 import com.example.demo.entity.Post;
 import com.example.demo.entity.PostLike;
 import com.example.demo.entity.User;
-import com.example.demo.exception.EntityNotFoundException;
+import com.example.demo.exception.AppException;
 import com.example.demo.repository.PostLikeRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,7 @@ public class PostLikeService {
     public LikeDto toggle(Long postId, String username) {
         Post post = postService.findByIdInternal(postId);
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다: " + username));
+                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다: " + username));
 
         boolean liked;
         if (postLikeRepository.existsByPostAndUser(post, user)) {
