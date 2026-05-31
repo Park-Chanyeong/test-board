@@ -26,8 +26,7 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentDetailDto> findByPostId(Long postId) {
-        Post post = postService.findByIdInternal(postId);
-        return commentRepository.findAllByPostOrderByCreatedAtAsc(post)
+        return commentRepository.findAllByPost_IdOrderByCreatedAtAsc(postId)
                 .stream().map(CommentDetailDto::from).toList();
     }
 

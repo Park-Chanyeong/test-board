@@ -58,7 +58,7 @@ public class PostService {
         verifyAuthor(post, username);
         post.setTitle(dto.getTitle());
         post.setContent(dto.getContent());
-        return PostDetailDto.from(postRepository.save(post));
+        return PostDetailDto.from(post);
     }
 
     @Transactional

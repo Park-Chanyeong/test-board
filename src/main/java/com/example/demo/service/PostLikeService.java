@@ -22,11 +22,9 @@ public class PostLikeService {
 
     @Transactional(readOnly = true)
     public LikeDto getLikeStatus(Long postId, String username) {
-        Post post = postService.findByIdInternal(postId);
-        long count = postLikeRepository.countByPost(post);
+        long count = postLikeRepository.countByPost_Id(postId);
         if (username == null) return new LikeDto(count, false);
-        User user = userRepository.findByUsername(username).orElse(null);
-        boolean liked = user != null && postLikeRepository.existsByPostAndUser(post, user);
+        boolean liked = postLikeRepository.existsByPost_IdAndUser_Username(postId, username);
         return new LikeDto(count, liked);
     }
 

@@ -45,10 +45,10 @@ public class AuthService {
     @Transactional
     public TokenDto login(LoginDto dto) {
         User user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new BadCredentialsException("아이디 또는 비밀번호가 올바르지 않습니다."));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+            throw new BadCredentialsException("아이디 또는 비밀번호가 올바르지 않습니다.");
         }
 
         String accessToken = jwtTokenProvider.generateAccessToken(user.getUsername());

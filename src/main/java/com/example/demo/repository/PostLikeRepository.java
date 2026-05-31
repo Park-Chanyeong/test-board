@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
-    // SELECT COUNT(*) > 0 FROM post_like WHERE post_id = ? AND user_id = ?
+    long countByPost_Id(Long postId);
+    boolean existsByPost_IdAndUser_Username(Long postId, String username);
+
     boolean existsByPostAndUser(Post post, User user);
     long countByPost(Post post);
 

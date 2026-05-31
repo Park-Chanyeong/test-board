@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     @EntityGraph(attributePaths = "author")
-    List<Comment> findAllByPostOrderByCreatedAtAsc(Post post);
+    List<Comment> findAllByPost_IdOrderByCreatedAtAsc(Long postId);
 
     void deleteAllByPost(Post post);
 }
