@@ -5,6 +5,8 @@ import com.example.demo.dto.PostDto;
 import com.example.demo.entity.Post;
 import com.example.demo.entity.User;
 import com.example.demo.exception.AppException;
+import com.example.demo.repository.CommentRepository;
+import com.example.demo.repository.PostLikeRepository;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
+    private final PostLikeRepository postLikeRepository;
 
     @Transactional(readOnly = true)
     public Page<PostDetailDto> findAllPaged(int page, int size) {
@@ -65,6 +69,8 @@ public class PostService {
     public void delete(Long id, String username) {
         Post post = findByIdInternal(id);
         verifyAuthor(post, username);
+        postLikeRepository.deleteAllByPost(post);
+        commentRepository.deleteAllByPost(post);
         postRepository.deleteById(id);
     }
 

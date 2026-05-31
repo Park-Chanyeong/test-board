@@ -63,7 +63,7 @@ public class PostController extends BaseController {
     @Operation(summary = "게시글 삭제")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(
+    public ResponseEntity<CommonResponse<Void>> delete(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) {
         return executeVoid(() -> postService.delete(id, userDetails.getUsername()));

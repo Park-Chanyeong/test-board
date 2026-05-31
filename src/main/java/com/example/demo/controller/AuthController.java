@@ -36,7 +36,7 @@ public class AuthController extends BaseController {
 
     @Operation(summary = "토큰 갱신", description = "Refresh Token으로 새 Access Token을 발급합니다.")
     @PostMapping("/refresh")
-    public ResponseEntity<CommonResponse<TokenDto>> refresh(@RequestBody RefreshDto dto) {
+    public ResponseEntity<CommonResponse<TokenDto>> refresh(@Valid @RequestBody RefreshDto dto) {
         return execute(HttpStatus.OK, () -> authService.refresh(dto.getRefreshToken()));
     }
 }

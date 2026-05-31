@@ -12,8 +12,8 @@ public abstract class BaseController {
         return ResponseEntity.status(status).body(CommonResponse.of(status, action.get()));
     }
 
-    protected ResponseEntity<Void> executeVoid(Runnable action) {
+    protected ResponseEntity<CommonResponse<Void>> executeVoid(Runnable action) {
         action.run();
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(CommonResponse.of(HttpStatus.OK, null));
     }
 }

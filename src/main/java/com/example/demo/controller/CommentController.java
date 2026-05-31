@@ -44,7 +44,7 @@ public class CommentController extends BaseController {
     @Operation(summary = "댓글 삭제")
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(
+    public ResponseEntity<CommonResponse<Void>> deleteComment(
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @AuthenticationPrincipal UserDetails userDetails) {
