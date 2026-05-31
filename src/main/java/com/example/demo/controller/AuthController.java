@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.LoginDto;
-import com.example.demo.dto.RefreshRequest;
+import com.example.demo.dto.RefreshDto;
 import com.example.demo.dto.RegisterDto;
 import com.example.demo.dto.TokenDto;
 import com.example.demo.service.AuthService;
@@ -53,7 +53,7 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "유효하지 않거나 만료된 Refresh Token")
     })
     @PostMapping("/refresh")
-    public TokenDto refresh(@RequestBody RefreshRequest request) {
-        return authService.refresh(request.getRefreshToken());
+    public TokenDto refresh(@RequestBody RefreshDto dto) {
+        return authService.refresh(dto.getRefreshToken());
     }
 }

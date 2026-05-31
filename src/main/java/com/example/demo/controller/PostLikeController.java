@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.response.LikeResponse;
+import com.example.demo.dto.LikeDto;
 import com.example.demo.service.PostLikeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -20,20 +20,20 @@ public class PostLikeController {
 
     @Operation(summary = "좋아요 정보 조회", description = "좋아요 수와 현재 유저의 좋아요 여부를 반환합니다. 인증 불필요.")
     @GetMapping
-    public LikeResponse getLikeInfo(
+    public LikeDto getLikeInfo(
             @PathVariable Long postId,
             @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails != null ? userDetails.getUsername() : null;
-        return new LikeResponse(postLikeService.countByPostId(postId), postLikeService.hasLiked(postId, username));
+        return new LikeDto(postLikeService.countByPostId(postId), postLikeService.hasLiked(postId, username));
     }
 
     @Operation(summary = "좋아요 토글", description = "좋아요를 누르거나 취소합니다. JWT 인증 필요.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
-    public LikeResponse toggleLike(
+    public LikeDto toggleLike(
             @PathVariable Long postId,
             @AuthenticationPrincipal UserDetails userDetails) {
         boolean liked = postLikeService.toggle(postId, userDetails.getUsername());
-        return new LikeResponse(postLikeService.countByPostId(postId), liked);
+        return new LikeDto(postLikeService.countByPostId(postId), liked);
     }
 }

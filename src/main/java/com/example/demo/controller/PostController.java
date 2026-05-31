@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.PostDto;
-import com.example.demo.dto.response.PostResponse;
+import com.example.demo.dto.PostDetailDto;
 import com.example.demo.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,7 +28,7 @@ public class PostController {
     @Operation(summary = "게시글 목록 조회", description = "전체 게시글 목록을 페이지 단위로 반환")
     @ApiResponse(responseCode = "200", description = "조회 성공")
     @GetMapping
-    public Page<PostResponse> getAll(
+    public Page<PostDetailDto> getAll(
             @Parameter(description = "페이지 번호 (0부터 시작)", example = "0") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") int size) {
         return postService.findAllPaged(page, size);
@@ -40,7 +40,7 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글")
     })
     @GetMapping("/{id}")
-    public PostResponse getOne(@Parameter(description = "게시글 ID", example = "1") @PathVariable Long id) {
+    public PostDetailDto getOne(@Parameter(description = "게시글 ID", example = "1") @PathVariable Long id) {
         return postService.findById(id);
     }
 
@@ -51,10 +51,10 @@ public class PostController {
     })
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
-    public ResponseEntity<PostResponse> create(
+    public ResponseEntity<PostDetailDto> create(
             @RequestBody PostDto dto,
             @AuthenticationPrincipal UserDetails userDetails) {
-        PostResponse response = postService.create(dto, userDetails.getUsername());
+        PostDetailDto response = postService.create(dto, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -66,7 +66,7 @@ public class PostController {
     })
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("/{id}")
-    public PostResponse update(
+    public PostDetailDto update(
             @Parameter(description = "게시글 ID", example = "1") @PathVariable Long id,
             @RequestBody PostDto dto,
             @AuthenticationPrincipal UserDetails userDetails) {
