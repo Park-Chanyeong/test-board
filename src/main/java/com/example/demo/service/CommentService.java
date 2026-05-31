@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/** 댓글 비즈니스 로직 */
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -24,18 +25,21 @@ public class CommentService {
     private final PostService postService;
     private final UserRepository userRepository;
 
+    /** 특정 게시글의 댓글 목록을 오래된 순으로 반환 */
     @Transactional(readOnly = true)
     public List<CommentDetailDto> findByPostId(Long postId) {
         return commentRepository.findAllByPost_IdOrderByCreatedAtAsc(postId)
                 .stream().map(CommentDetailDto::from).toList();
     }
 
+    /** 댓글 단건 조회 — 없으면 404 */
     @Transactional(readOnly = true)
     public Comment findById(Long id) {
         return commentRepository.findById(id)
                 .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "댓글을 찾을 수 없습니다: " + id));
     }
 
+    /** 댓글 작성 — 게시글 존재 여부 먼저 확인 */
     @Transactional
     public CommentDetailDto create(Long postId, CommentDto dto, String username) {
         Post post = postService.findByIdInternal(postId);
@@ -48,6 +52,7 @@ public class CommentService {
         return CommentDetailDto.from(commentRepository.save(comment));
     }
 
+    /** 댓글 삭제 — 작성자 본인이 아니면 403 */
     @Transactional
     public void delete(Long id, String username) {
         Comment comment = findById(id);

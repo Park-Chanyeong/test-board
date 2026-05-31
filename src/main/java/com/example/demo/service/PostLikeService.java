@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** 좋아요 조회 · 토글 비즈니스 로직 */
 @Service
 @RequiredArgsConstructor
 public class PostLikeService {
@@ -20,6 +21,10 @@ public class PostLikeService {
     private final PostService postService;
     private final UserRepository userRepository;
 
+    /**
+     * 좋아요 수와 현재 사용자의 좋아요 여부 반환.
+     * 비로그인 상태(username == null)이면 liked = false 로 고정.
+     */
     @Transactional(readOnly = true)
     public LikeDto getLikeStatus(Long postId, String username) {
         long count = postLikeRepository.countByPost_Id(postId);
@@ -28,6 +33,10 @@ public class PostLikeService {
         return new LikeDto(count, liked);
     }
 
+    /**
+     * 좋아요 토글 — 이미 눌렀으면 취소, 아니면 추가.
+     * 변경 후 최신 좋아요 수와 현재 상태를 반환한다.
+     */
     @Transactional
     public LikeDto toggle(Long postId, String username) {
         Post post = postService.findByIdInternal(postId);

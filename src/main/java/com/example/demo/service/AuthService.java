@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
+/** 회원가입 · 로그인 · 토큰 갱신 비즈니스 로직 */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -31,6 +32,7 @@ public class AuthService {
     @Value("${jwt.refresh-token-expiration}")
     private long refreshTokenExpiration;
 
+    /** 회원가입 — 중복 username 시 409 */
     @Transactional
     public void register(RegisterDto dto) {
         if (userRepository.existsByUsername(dto.getUsername())) {
@@ -42,6 +44,9 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    /**
+     * 로그인 — Access Token + Refresh Token 발급.
+     */
     @Transactional
     public TokenDto login(LoginDto dto) {
         User user = userRepository.findByUsername(dto.getUsername())
@@ -54,8 +59,7 @@ public class AuthService {
         String accessToken = jwtTokenProvider.generateAccessToken(user.getUsername());
         String refreshTokenValue = jwtTokenProvider.generateRefreshToken();
 
-        refreshTokenRepository.deleteByUser(user);
-
+        refreshTokenRepository.deleteByUser(user); // 기존 토큰 교체 (1인 1토큰)
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setToken(refreshTokenValue);
@@ -65,6 +69,10 @@ public class AuthService {
         return new TokenDto(accessToken, refreshTokenValue);
     }
 
+    /**
+     * Refresh Token으로 새 Access Token 발급.
+     * 만료된 토큰은 DB에서 즉시 삭제한다.
+     */
     @Transactional
     public TokenDto refresh(String refreshTokenValue) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenValue)
