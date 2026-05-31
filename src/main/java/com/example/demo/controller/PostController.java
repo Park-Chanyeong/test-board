@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.CommonResponse;
 import com.example.demo.dto.LikeDto;
+import com.example.demo.dto.PageResponse;
 import com.example.demo.dto.PostDetailDto;
 import com.example.demo.dto.PostDto;
 import com.example.demo.service.PostLikeService;
@@ -11,7 +12,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,10 +29,10 @@ public class PostController extends BaseController {
 
     @Operation(summary = "게시글 목록 조회")
     @GetMapping
-    public ResponseEntity<CommonResponse<Page<PostDetailDto>>> getAll(
+    public ResponseEntity<CommonResponse<PageResponse<PostDetailDto>>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return execute(HttpStatus.OK, () -> postService.findAllPaged(page, size));
+        return execute(HttpStatus.OK, () -> PageResponse.from(postService.findAllPaged(page, size)));
     }
 
     @Operation(summary = "게시글 단건 조회")
