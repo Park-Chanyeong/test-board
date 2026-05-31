@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.CommentDto;
 import com.example.demo.dto.CommentDetailDto;
+import com.example.demo.dto.CommentDto;
 import com.example.demo.entity.Comment;
 import com.example.demo.entity.Post;
 import com.example.demo.entity.User;
@@ -23,18 +23,20 @@ public class CommentService {
     private final PostService postService;
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public List<CommentDetailDto> findByPostId(Long postId) {
         Post post = postService.findByIdInternal(postId);
         return commentRepository.findAllByPostOrderByCreatedAtAsc(post)
                 .stream().map(CommentDetailDto::from).toList();
     }
 
-    // 내부 전용 — 삭제 시 엔티티 직접 필요
+    @Transactional(readOnly = true)
     public Comment findById(Long id) {
         return commentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("댓글을 찾을 수 없습니다: " + id));
     }
 
+    @Transactional
     public CommentDetailDto create(Long postId, CommentDto dto, String username) {
         Post post = postService.findByIdInternal(postId);
         User author = userRepository.findByUsername(username)

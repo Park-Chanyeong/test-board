@@ -1,12 +1,13 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.ApiResponse;
 import com.example.demo.dto.CommentDetailDto;
 import com.example.demo.dto.CommentDto;
+import com.example.demo.dto.CommonResponse;
 import com.example.demo.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,16 +27,16 @@ public class CommentController extends BaseController {
 
     @Operation(summary = "댓글 목록 조회", description = "게시글의 댓글 목록을 반환합니다. 인증 불필요.")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CommentDetailDto>>> getComments(@PathVariable Long postId) {
+    public ResponseEntity<CommonResponse<List<CommentDetailDto>>> getComments(@PathVariable Long postId) {
         return execute(HttpStatus.OK, () -> commentService.findByPostId(postId));
     }
 
     @Operation(summary = "댓글 작성", description = "댓글을 작성합니다. JWT 인증 필요.")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
-    public ResponseEntity<ApiResponse<CommentDetailDto>> createComment(
+    public ResponseEntity<CommonResponse<CommentDetailDto>> createComment(
             @PathVariable Long postId,
-            @RequestBody CommentDto dto,
+            @Valid @RequestBody CommentDto dto,
             @AuthenticationPrincipal UserDetails userDetails) {
         return execute(HttpStatus.CREATED, () -> commentService.create(postId, dto, userDetails.getUsername()));
     }

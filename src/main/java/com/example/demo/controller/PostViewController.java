@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.CommentDto;
+import com.example.demo.dto.LikeDto;
 import com.example.demo.dto.PostDto;
 import com.example.demo.entity.Post;
 import com.example.demo.service.CommentService;
@@ -36,8 +37,9 @@ public class PostViewController {
         model.addAttribute("comments", commentService.findByPostId(id));
         model.addAttribute("commentDto", new CommentDto());
         String username = resolveUsername(authentication);
-        model.addAttribute("likeCount", postLikeService.countByPostId(id));
-        model.addAttribute("hasLiked", postLikeService.hasLiked(id, username));
+        LikeDto likeStatus = postLikeService.getLikeStatus(id, username);
+        model.addAttribute("likeCount", likeStatus.getCount());
+        model.addAttribute("hasLiked", likeStatus.isLiked());
         return "posts/detail";
     }
 
