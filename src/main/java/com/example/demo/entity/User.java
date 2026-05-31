@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User implements UserDetails {
+public class User extends BaseTimeEntity implements UserDetails {
 
     public enum Role { ROLE_USER, ROLE_ADMIN }
 

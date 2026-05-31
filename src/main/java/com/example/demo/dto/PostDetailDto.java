@@ -13,6 +13,7 @@ public class PostDetailDto {
     private final String content;
     private final String authorUsername;
     private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
     private final int viewCount;
 
     private PostDetailDto(Post post) {
@@ -21,6 +22,7 @@ public class PostDetailDto {
         this.content = post.getContent();
         this.authorUsername = post.getAuthorUsername();
         this.createdAt = post.getCreatedAt();
+        this.updatedAt = post.getUpdatedAt();
         this.viewCount = post.getViewCount();
     }
 

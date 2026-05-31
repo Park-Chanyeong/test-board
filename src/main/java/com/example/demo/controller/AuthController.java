@@ -24,8 +24,9 @@ public class AuthController extends BaseController {
 
     @Operation(summary = "회원가입")
     @PostMapping("/register")
-    public ResponseEntity<CommonResponse<String>> register(@Valid @RequestBody RegisterDto dto) {
-        return execute(HttpStatus.CREATED, () -> { authService.register(dto); return "회원가입 성공"; });
+    public ResponseEntity<CommonResponse<Void>> register(@Valid @RequestBody RegisterDto dto) {
+        authService.register(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.of(HttpStatus.CREATED, null));
     }
 
     @Operation(summary = "로그인")
